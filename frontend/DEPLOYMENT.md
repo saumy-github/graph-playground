@@ -192,14 +192,14 @@ Use [PageSpeed Insights](https://pagespeed.web.dev/):
 
 ### Build Fails
 
-**Error: TypeScript errors**
+**Error:TypeScript errors**
 
 ```bash
 npm run lint
 # Fix all errors, then try again
 ```
 
-**Error: Missing dependencies**
+**Error:Missing dependencies**
 
 ```bash
 rm -rf node_modules package-lock.json
@@ -265,7 +265,7 @@ Already configured in `vercel.json`:
 
 ## 💰 Cost Considerations
 
-### Free Tier Includes:
+### Free Tier Includes
 
 - ✅ Unlimited deployments
 - ✅ 100GB bandwidth/month
@@ -274,7 +274,7 @@ Already configured in `vercel.json`:
 - ✅ DDoS protection
 - ✅ Edge network (CDN)
 
-### This Project Uses:
+### This Project Uses
 
 - ~2MB per page load
 - Minimal compute resources
@@ -304,10 +304,10 @@ Before final submission:
 
 ## 🎓 For Academic Submission
 
-### Include in Your Report:
+### Include in Your Report
 
-1. **Live Demo Link**: https://graph-playground.vercel.app
-2. **GitHub Repository**: https://github.com/saumy-github/graph-playground
+1. **Live Demo Link**: <https://graph-playground.vercel.app>
+2. **GitHub Repository**: <https://github.com/saumy-github/graph-playground>
 3. **Deployment Date**: [Date]
 4. **Vercel Dashboard Screenshot**: [Screenshot showing successful deployment]
 5. **Performance Metrics**: [PageSpeed Insights results]
@@ -316,19 +316,19 @@ Before final submission:
 
 ## 🆘 Support
 
-### Vercel Support:
+### Vercel Support
 
 - [Documentation](https://vercel.com/docs)
 - [Community Forum](https://github.com/vercel/vercel/discussions)
 - [Status Page](https://www.vercel-status.com/)
 
-### Project Issues:
+### Project Issues
 
 - GitHub Issues: [Create Issue](https://github.com/saumy-github/graph-playground/issues)
 
 ---
 
-## ✅ Success!
+## ✅ Success
 
 Once deployed, share your live demo:
 
@@ -342,4 +342,4 @@ Once deployed, share your live demo:
 
 ---
 
-**Happy Deploying! 🚀**
+Happy Deploying! 🚀

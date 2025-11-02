@@ -219,10 +219,10 @@ npm run dev
 
 ## Resources
 
-- **React Docs:** https://react.dev
-- **TypeScript:** https://www.typescriptlang.org/docs
-- **Tailwind CSS:** https://tailwindcss.com/docs
-- **Vite:** https://vite.dev/guide
+- **React Docs:** <https://react.dev>
+- **TypeScript:** <https://www.typescriptlang.org/docs>
+- **Tailwind CSS:** <https://tailwindcss.com/docs>
+- **Vite:** <https://vite.dev/guide>
 
 ## Questions?
 
