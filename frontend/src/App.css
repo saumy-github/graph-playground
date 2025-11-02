@@ -1,0 +1,6 @@
+/* Custom styles for the Graph Playground app */
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
