@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import type { Graph } from "../types/graph";
+import type { VertexState } from "../types/algorithm";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Pencil } from "lucide-react";
 
@@ -7,14 +8,37 @@ interface GraphCanvasProps {
   graph: Graph;
   onVertexClick?: (vertexId: string) => void;
   onCanvasClick?: (x: number, y: number) => void;
+  vertexStates?: Map<string, VertexState>;
+  highlightedEdges?: Set<string>;
 }
 
 export default function GraphCanvas({
   graph,
   onVertexClick,
   onCanvasClick,
+  vertexStates,
+  highlightedEdges,
 }: GraphCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Get vertex color based on state
+  const getVertexColor = (
+    vertexId: string
+  ): { fill: string[]; stroke: string } => {
+    const state = vertexStates?.get(vertexId) || "unvisited";
+
+    switch (state) {
+      case "current":
+        return { fill: ["#ef4444", "#dc2626"], stroke: "#991b1b" }; // Red
+      case "visiting":
+        return { fill: ["#fbbf24", "#f59e0b"], stroke: "#b45309" }; // Yellow
+      case "visited":
+        return { fill: ["#34d399", "#10b981"], stroke: "#047857" }; // Green
+      case "unvisited":
+      default:
+        return { fill: ["#60a5fa", "#3b82f6"], stroke: "#1e40af" }; // Blue
+    }
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,12 +52,17 @@ export default function GraphCanvas({
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw edges with gradient
-    ctx.lineWidth = 3;
     graph.edges.forEach((edge) => {
       const fromVertex = graph.vertices.find((v) => v.id === edge.from);
       const toVertex = graph.vertices.find((v) => v.id === edge.to);
 
       if (fromVertex && toVertex) {
+        const edgeKey = `${edge.from}-${edge.to}`;
+        const isHighlighted = highlightedEdges?.has(edgeKey) || false;
+
+        // Set line width and style based on highlight
+        ctx.lineWidth = isHighlighted ? 5 : 3;
+
         // Create gradient for edge
         const gradient = ctx.createLinearGradient(
           fromVertex.position.x,
@@ -41,12 +70,20 @@ export default function GraphCanvas({
           toVertex.position.x,
           toVertex.position.y
         );
-        gradient.addColorStop(0, "#6366f1");
-        gradient.addColorStop(1, "#8b5cf6");
 
-        ctx.strokeStyle = gradient;
-        ctx.shadowColor = "rgba(99, 102, 241, 0.3)";
-        ctx.shadowBlur = 8;
+        if (isHighlighted) {
+          gradient.addColorStop(0, "#3b82f6");
+          gradient.addColorStop(1, "#1d4ed8");
+          ctx.strokeStyle = gradient;
+          ctx.shadowColor = "rgba(59, 130, 246, 0.5)";
+          ctx.shadowBlur = 12;
+        } else {
+          gradient.addColorStop(0, "#6366f1");
+          gradient.addColorStop(1, "#8b5cf6");
+          ctx.strokeStyle = gradient;
+          ctx.shadowColor = "rgba(99, 102, 241, 0.3)";
+          ctx.shadowBlur = 8;
+        }
 
         ctx.beginPath();
         ctx.moveTo(fromVertex.position.x, fromVertex.position.y);
@@ -94,9 +131,17 @@ export default function GraphCanvas({
 
     // Draw vertices with gradient and shadow
     graph.vertices.forEach((vertex) => {
-      // Vertex shadow
-      ctx.shadowColor = "rgba(59, 130, 246, 0.4)";
-      ctx.shadowBlur = 15;
+      const colors = getVertexColor(vertex.id);
+      const state = vertexStates?.get(vertex.id) || "unvisited";
+
+      // Enhanced shadow for current vertex
+      if (state === "current") {
+        ctx.shadowColor = "rgba(239, 68, 68, 0.6)";
+        ctx.shadowBlur = 20;
+      } else {
+        ctx.shadowColor = "rgba(59, 130, 246, 0.4)";
+        ctx.shadowBlur = 15;
+      }
 
       // Vertex circle with gradient
       const gradient = ctx.createRadialGradient(
@@ -107,8 +152,8 @@ export default function GraphCanvas({
         vertex.position.y,
         20
       );
-      gradient.addColorStop(0, "#60a5fa");
-      gradient.addColorStop(1, "#3b82f6");
+      gradient.addColorStop(0, colors.fill[0]);
+      gradient.addColorStop(1, colors.fill[1]);
 
       ctx.fillStyle = gradient;
       ctx.beginPath();
@@ -116,8 +161,8 @@ export default function GraphCanvas({
       ctx.fill();
 
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = "#1e40af";
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = colors.stroke;
+      ctx.lineWidth = state === "current" ? 4 : 3;
       ctx.stroke();
 
       // Vertex label
@@ -127,7 +172,7 @@ export default function GraphCanvas({
       ctx.textBaseline = "middle";
       ctx.fillText(vertex.label, vertex.position.x, vertex.position.y);
     });
-  }, [graph]);
+  }, [graph, vertexStates, highlightedEdges]);
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current || !onCanvasClick) return;

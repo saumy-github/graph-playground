@@ -3,12 +3,26 @@ import Header from "./components/Header";
 import GraphCanvas from "./components/GraphCanvas";
 import ControlPanel from "./components/ControlPanel";
 import RepresentationView from "./components/RepresentationView";
+import AlgorithmController from "./components/AlgorithmController";
 import { useGraph } from "./hooks/useGraph";
+import { useDFS } from "./hooks/useDFS";
+import type { AlgorithmType } from "./types/algorithm";
 
 function App() {
   const { graph, addVertex, addEdge, toggleDirected, clearGraph } = useGraph();
 
   const [selectedVertices, setSelectedVertices] = useState<string[]>([]);
+  const [algorithmType, setAlgorithmType] = useState<AlgorithmType>(null);
+  const [startVertex, setStartVertex] = useState<string | null>(null);
+  const [animationSpeed, setAnimationSpeed] = useState(1000);
+  const [showAlgorithmController, setShowAlgorithmController] = useState(false);
+
+  // DFS Hook
+  const dfs = useDFS({
+    graph,
+    startVertexId: startVertex,
+    animationSpeed,
+  });
 
   const handleCanvasClick = (x: number, y: number) => {
     addVertex(x, y);
@@ -44,15 +58,31 @@ function App() {
   };
 
   const handleRunDFS = () => {
-    alert("DFS algorithm will be implemented here!");
+    if (graph.vertices.length === 0) {
+      alert("Please add some vertices to the graph first!");
+      return;
+    }
+    setAlgorithmType("DFS");
+    setStartVertex(graph.vertices[0].id);
+    setShowAlgorithmController(true);
   };
 
   const handleRunBFS = () => {
-    alert("BFS algorithm will be implemented here!");
+    alert("BFS algorithm will be implemented in future updates!");
   };
 
   const handleRunDijkstra = () => {
-    alert("Dijkstra algorithm will be implemented here!");
+    alert("Dijkstra algorithm will be implemented in future updates!");
+  };
+
+  const handleAlgorithmChange = (algorithm: AlgorithmType) => {
+    setAlgorithmType(algorithm);
+    dfs.reset();
+  };
+
+  const handleStartVertexChange = (vertexId: string | null) => {
+    setStartVertex(vertexId);
+    dfs.reset();
   };
 
   return (
@@ -63,16 +93,26 @@ function App() {
         projectTitle="Graph Playground - DAA Project"
       />
 
-      <main className="flex-1 container mx-auto px-6 py-8">
-        <div className="grid grid-cols-12 gap-6 h-full">
+      <main className="flex-1 container mx-auto px-6 py-8 overflow-hidden">
+        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-12rem)]">
           {/* Left Column - Canvas */}
-          <div className="col-span-8 space-y-4">
+          <div className="col-span-8 space-y-4 overflow-y-auto">
             <GraphCanvas
               graph={graph}
               onVertexClick={handleVertexClick}
               onCanvasClick={handleCanvasClick}
+              vertexStates={
+                showAlgorithmController
+                  ? dfs.visualizationState.vertexStates
+                  : undefined
+              }
+              highlightedEdges={
+                showAlgorithmController
+                  ? dfs.visualizationState.highlightedEdges
+                  : undefined
+              }
             />
-            {selectedVertices.length > 0 && (
+            {selectedVertices.length > 0 && !showAlgorithmController && (
               <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-800 p-4 rounded-lg shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <p className="font-medium flex items-center gap-2">
                   <span className="inline-block w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
@@ -82,22 +122,82 @@ function App() {
                 </p>
               </div>
             )}
+            {showAlgorithmController && (
+              <div className="bg-white/80 backdrop-blur-sm border-2 border-border rounded-lg p-4 shadow-sm">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                  Vertex States Legend
+                </p>
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-blue-800"></div>
+                    <span className="text-sm">Unvisited</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-yellow-400 border-2 border-yellow-700"></div>
+                    <span className="text-sm">In Stack</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-red-500 border-2 border-red-900"></div>
+                    <span className="text-sm">Current</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-green-400 border-2 border-green-700"></div>
+                    <span className="text-sm">Visited</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Controls and Representation */}
-          <div className="col-span-4 space-y-6">
-            <ControlPanel
-              isDirected={graph.isDirected}
-              onToggleDirected={toggleDirected}
-              onAddVertex={handleAddVertex}
-              onAddEdge={handleAddEdge}
-              onClearGraph={clearGraph}
-              onRunDFS={handleRunDFS}
-              onRunBFS={handleRunBFS}
-              onRunDijkstra={handleRunDijkstra}
-            />
+          <div className="col-span-4 overflow-y-auto pr-2">
+            <div className="space-y-6 pb-6">
+              {!showAlgorithmController ? (
+                <>
+                  <ControlPanel
+                    isDirected={graph.isDirected}
+                    onToggleDirected={toggleDirected}
+                    onAddVertex={handleAddVertex}
+                    onAddEdge={handleAddEdge}
+                    onClearGraph={clearGraph}
+                    onRunDFS={handleRunDFS}
+                    onRunBFS={handleRunBFS}
+                    onRunDijkstra={handleRunDijkstra}
+                  />
 
-            <RepresentationView graph={graph} />
+                  <RepresentationView graph={graph} />
+                </>
+              ) : (
+                <AlgorithmController
+                  graph={graph}
+                  algorithmType={algorithmType}
+                  onAlgorithmChange={handleAlgorithmChange}
+                  startVertex={startVertex}
+                  onStartVertexChange={handleStartVertexChange}
+                  animationSpeed={animationSpeed}
+                  onSpeedChange={setAnimationSpeed}
+                  status={dfs.status}
+                  currentStep={dfs.visualizationState.currentStep}
+                  totalSteps={dfs.visualizationState.totalSteps}
+                  description={dfs.visualizationState.description}
+                  stack={dfs.visualizationState.stack}
+                  visited={dfs.visualizationState.visited}
+                  onStart={dfs.start}
+                  onPause={dfs.pause}
+                  onResume={dfs.resume}
+                  onNextStep={dfs.nextStep}
+                  onPreviousStep={dfs.previousStep}
+                  onReset={() => {
+                    dfs.reset();
+                    setShowAlgorithmController(false);
+                    setAlgorithmType(null);
+                    setStartVertex(null);
+                  }}
+                  canStepForward={dfs.canStepForward}
+                  canStepBackward={dfs.canStepBackward}
+                />
+              )}
+            </div>
           </div>
         </div>
       </main>
