@@ -123,7 +123,6 @@ export default function AlgorithmController({
             <option value="">Select Algorithm</option>
             <option value="DFS">Depth First Search (DFS)</option>
             <option value="BFS">Breadth First Search (BFS)</option>
-            <option value="Dijkstra">Dijkstra's Algorithm</option>
           </select>
         </div>
 

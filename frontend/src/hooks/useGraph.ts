@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Graph, Vertex, Edge } from "../types/graph";
 
 export function useGraph(initialGraph?: Graph) {
@@ -9,6 +9,21 @@ export function useGraph(initialGraph?: Graph) {
       isDirected: false,
     }
   );
+
+  // History management for undo/redo
+  const [history, setHistory] = useState<Graph[]>([graph]);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+
+  // Update history whenever graph changes
+  useEffect(() => {
+    // Only add to history if this is a new change (not from undo/redo)
+    if (JSON.stringify(graph) !== JSON.stringify(history[historyIndex])) {
+      const newHistory = history.slice(0, historyIndex + 1);
+      newHistory.push(graph);
+      setHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+    }
+  }, [graph]);
 
   const addVertex = useCallback((x: number, y: number) => {
     setGraph((prev) => {
@@ -76,6 +91,47 @@ export function useGraph(initialGraph?: Graph) {
     });
   }, [graph.isDirected]);
 
+  // Undo functionality
+  const undo = useCallback(() => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      setGraph(history[newIndex]);
+    }
+  }, [historyIndex, history]);
+
+  // Redo functionality
+  const redo = useCallback(() => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      setGraph(history[newIndex]);
+    }
+  }, [historyIndex, history]);
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "y" || (e.key === "z" && e.shiftKey))
+      ) {
+        e.preventDefault();
+        redo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [undo, redo]);
+
+  // Calculate whether undo/redo is available
+  const canUndo = historyIndex > 0;
+  const canRedo = historyIndex < history.length - 1;
+
   return {
     graph,
     addVertex,
@@ -84,5 +140,9 @@ export function useGraph(initialGraph?: Graph) {
     removeEdge,
     toggleDirected,
     clearGraph,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   };
 }

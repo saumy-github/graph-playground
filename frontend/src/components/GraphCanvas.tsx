@@ -197,17 +197,17 @@ export default function GraphCanvas({
 
   return (
     <Card className="shadow-lg border-2 h-full">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <Pencil className="h-5 w-5 text-primary" />
-          <CardTitle>Graph Canvas</CardTitle>
+          <Pencil className="h-4 w-4 text-primary" />
+          <CardTitle className="text-base">Graph Canvas</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
         <canvas
           ref={canvasRef}
           width={800}
-          height={500}
+          height={400}
           onClick={handleCanvasClick}
           className="border-2 border-border rounded-md cursor-crosshair bg-muted/20 hover:bg-muted/30 transition-colors"
         />

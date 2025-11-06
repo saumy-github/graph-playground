@@ -14,35 +14,35 @@ export default function Header({
 }: HeaderProps) {
   return (
     <header className="border-b bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-lg">
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="rounded-lg bg-white/10 p-3 backdrop-blur-sm">
-              <Network className="h-8 w-8" />
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-white/10 p-2 backdrop-blur-sm">
+              <Network className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">
+                <h1 className="text-2xl font-bold tracking-tight">
                   {projectTitle}
                 </h1>
-                <Sparkles className="h-5 w-5 text-yellow-300" />
+                <Sparkles className="h-4 w-4 text-yellow-300" />
               </div>
-              <p className="mt-1 flex items-center gap-2 text-sm text-blue-100">
+              <p className="mt-0.5 flex items-center gap-2 text-xs text-blue-100">
                 <span>Interactive Graph Algorithms Visualizer</span>
                 <Badge
                   variant="secondary"
-                  className="bg-white/20 text-white border-white/30"
+                  className="bg-white/20 text-white border-white/30 text-xs"
                 >
                   v1.0
                 </Badge>
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-4 py-3 backdrop-blur-sm">
-            <GraduationCap className="h-5 w-5" />
+          <div className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 backdrop-blur-sm">
+            <GraduationCap className="h-4 w-4" />
             <div className="text-right">
-              <p className="font-semibold">{studentName}</p>
-              <p className="text-sm text-blue-100">{rollNumber}</p>
+              <p className="font-semibold text-sm">{studentName}</p>
+              <p className="text-xs text-blue-100">{rollNumber}</p>
             </div>
           </div>
         </div>

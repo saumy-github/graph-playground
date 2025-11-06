@@ -1,4 +1,4 @@
-export type AlgorithmType = "DFS" | "BFS" | "Dijkstra" | null;
+export type AlgorithmType = "DFS" | "BFS" | null;
 
 export type AlgorithmStatus = "idle" | "running" | "paused" | "complete";
 

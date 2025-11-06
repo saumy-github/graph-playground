@@ -9,7 +9,17 @@ import { useDFS } from "./hooks/useDFS";
 import type { AlgorithmType } from "./types/algorithm";
 
 function App() {
-  const { graph, addVertex, addEdge, toggleDirected, clearGraph } = useGraph();
+  const {
+    graph,
+    addVertex,
+    addEdge,
+    toggleDirected,
+    clearGraph,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useGraph();
 
   const [selectedVertices, setSelectedVertices] = useState<string[]>([]);
   const [algorithmType, setAlgorithmType] = useState<AlgorithmType>(null);
@@ -71,10 +81,6 @@ function App() {
     alert("BFS algorithm will be implemented in future updates!");
   };
 
-  const handleRunDijkstra = () => {
-    alert("Dijkstra algorithm will be implemented in future updates!");
-  };
-
   const handleAlgorithmChange = (algorithm: AlgorithmType) => {
     setAlgorithmType(algorithm);
     dfs.reset();
@@ -93,10 +99,10 @@ function App() {
         projectTitle="Graph Playground - DAA Project"
       />
 
-      <main className="flex-1 container mx-auto px-6 py-8 overflow-hidden">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-12rem)]">
+      <main className="flex-1 container mx-auto px-6 py-4 overflow-hidden">
+        <div className="grid grid-cols-12 gap-4 h-[calc(100vh-10rem)]">
           {/* Left Column - Canvas */}
-          <div className="col-span-8 space-y-4 overflow-y-auto">
+          <div className="col-span-8 space-y-3 overflow-y-auto">
             <GraphCanvas
               graph={graph}
               onVertexClick={handleVertexClick}
@@ -123,11 +129,11 @@ function App() {
               </div>
             )}
             {showAlgorithmController && (
-              <div className="bg-white/80 backdrop-blur-sm border-2 border-border rounded-lg p-4 shadow-sm">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+              <div className="bg-white/80 backdrop-blur-sm border-2 border-border rounded-lg p-3 shadow-sm">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                   Vertex States Legend
                 </p>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-2">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-blue-800"></div>
                     <span className="text-sm">Unvisited</span>
@@ -151,7 +157,7 @@ function App() {
 
           {/* Right Column - Controls and Representation */}
           <div className="col-span-4 overflow-y-auto pr-2">
-            <div className="space-y-6 pb-6">
+            <div className="space-y-4 pb-4">
               {!showAlgorithmController ? (
                 <>
                   <ControlPanel
@@ -160,9 +166,12 @@ function App() {
                     onAddVertex={handleAddVertex}
                     onAddEdge={handleAddEdge}
                     onClearGraph={clearGraph}
+                    onUndo={undo}
+                    onRedo={redo}
+                    canUndo={canUndo}
+                    canRedo={canRedo}
                     onRunDFS={handleRunDFS}
                     onRunBFS={handleRunBFS}
-                    onRunDijkstra={handleRunDijkstra}
                   />
 
                   <RepresentationView graph={graph} />
@@ -202,8 +211,8 @@ function App() {
         </div>
       </main>
 
-      <footer className="bg-white/80 backdrop-blur-sm border-t border-border mt-8 shadow-lg">
-        <div className="container mx-auto px-6 py-4 text-center text-muted-foreground text-sm">
+      <footer className="bg-white/80 backdrop-blur-sm border-t border-border shadow-lg">
+        <div className="container mx-auto px-6 py-2 text-center text-muted-foreground text-xs">
           <p className="flex items-center justify-center gap-2">
             <span>Design and Analysis of Algorithms Project ©</span>
             <span className="font-semibold text-foreground">

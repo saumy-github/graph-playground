@@ -60,19 +60,19 @@ export default function RepresentationView({ graph }: RepresentationViewProps) {
 
   return (
     <Card className="shadow-lg border-2">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-primary" />
-          <CardTitle>Graph Representations</CardTitle>
+          <BarChart3 className="h-4 w-4 text-primary" />
+          <CardTitle className="text-base">Graph Representations</CardTitle>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Adjacency Matrix */}
         <div>
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-2">
             <Table2 className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Adjacency Matrix
             </h3>
           </div>
@@ -126,14 +126,14 @@ export default function RepresentationView({ graph }: RepresentationViewProps) {
 
         {/* Adjacency List */}
         <div>
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-2">
             <List className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Adjacency List
             </h3>
           </div>
           {graph.vertices.length > 0 ? (
-            <div className="rounded-lg border bg-muted/30 p-4 space-y-2">
+            <div className="rounded-lg border bg-muted/30 p-3 space-y-1.5">
               {Object.entries(adjList).map(([vertex, neighbors]) => (
                 <div key={vertex} className="flex items-start gap-2 text-sm">
                   <Badge variant="outline" className="font-semibold">
@@ -165,29 +165,29 @@ export default function RepresentationView({ graph }: RepresentationViewProps) {
 
         {/* Graph Stats */}
         <div>
-          <Separator className="my-4" />
-          <div className="flex items-center gap-2 mb-3">
+          <Separator className="my-3" />
+          <div className="flex items-center gap-2 mb-2">
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Graph Statistics
             </h3>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-lg border bg-blue-50 p-4 dark:bg-blue-950">
-              <p className="text-sm text-muted-foreground">Vertices</p>
-              <p className="text-3xl font-bold text-blue-600">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-lg border bg-white p-3 dark:bg-white">
+              <p className="text-xs text-muted-foreground">Vertices</p>
+              <p className="text-2xl font-bold text-blue-600">
                 {graph.vertices.length}
               </p>
-              <Badge variant="secondary" className="mt-2">
+              <Badge variant="secondary" className="mt-1 text-xs">
                 Total Nodes
               </Badge>
             </div>
-            <div className="rounded-lg border bg-emerald-50 p-4 dark:bg-emerald-950">
-              <p className="text-sm text-muted-foreground">Edges</p>
-              <p className="text-3xl font-bold text-emerald-600">
+            <div className="rounded-lg border bg-white p-3 dark:bg-white">
+              <p className="text-xs text-muted-foreground">Edges</p>
+              <p className="text-2xl font-bold text-emerald-600">
                 {graph.edges.length}
               </p>
-              <Badge variant="secondary" className="mt-2">
+              <Badge variant="secondary" className="mt-1 text-xs">
                 Total Connections
               </Badge>
             </div>
